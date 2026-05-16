@@ -27,7 +27,7 @@ public class Result<T> {
         result.code = 500;
         return result;
     }
-    public static <T> Result<T> error(String message, Integer code) {
+    public static <T> Result<T> error(Integer code, String message) {
         Result<T> result = new Result<>();
         result.code = code;
         result.message = message;
