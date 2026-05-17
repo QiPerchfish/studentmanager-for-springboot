@@ -4,7 +4,7 @@ A concise, fast, and operational online Web backend system, built on Spring Boot
 #---------------------
 
 # 學生信息管理系統 🎓
-#### 基於SpringBoot的WebOS
+#### 基於SpringBoot的Web应用
 ### 為了您更方便的管理課程，統計數據
 
 ## 項目簡介
@@ -61,6 +61,11 @@ A concise, fast, and operational online Web backend system, built on Spring Boot
 | GET | `/api/students/average-score?className=` | 班级平均分 | 
 
 ---
+
+### 分页查询
+#### page默认值是0，size是10
+
+
 ## 🚀 快速启动
 
 ### 1. 克隆项目

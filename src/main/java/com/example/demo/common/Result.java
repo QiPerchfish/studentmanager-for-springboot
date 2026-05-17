@@ -17,7 +17,7 @@ public class Result<T> {
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>();
         result.data = data;
-        result.code = 500;
+        result.code = 200;
         result.message = "success";
         return result;
     }

@@ -31,15 +31,11 @@ public class Controller {
     /*
     查询所有学生
      */
-    @GetMapping
+    @GetMapping("/list")
     public List<Student> getAllStudents() {
         return studentService.findAllStudents();
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "testing";
-    }
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
         return studentService.findStudentById(id)
@@ -87,7 +83,7 @@ public class Controller {
     public List<Student> getTopStudent(@RequestParam(required = false) Integer minScore) {
         return studentService.findTopStudents(minScore);
     }
-    @GetMapping("/Count")
+    @GetMapping("/count")
     public long countStudentByClass(@RequestParam String className) {
         return studentService.countStudentsByClass(className);
     }
