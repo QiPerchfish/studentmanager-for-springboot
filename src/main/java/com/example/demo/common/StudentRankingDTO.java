@@ -1,22 +1,29 @@
 package com.example.demo.common;
 import java.math.BigDecimal;
+import jakarta.validation.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentRankingDTO {
+    @NotNull(message = "ID不能为空")
     private Long studentId;
+    @NotBlank(message = "学生姓名不能为空")
+    @Size(min = 2, max = 20, message = "长度不得超过20，也不能小于2")
     private String studentName;
+    @NotBlank(message = "学号不能为0")
+    @Size(min = 1, max = 10, message = "学号必须在1-10之间")
     private String studentNo;
     private String className;
-    private String studentAge;
-
+    @Min(value = 1, message = "必须大于5")
+    @Max(value = 35, message = "不能超过35")
+    private Integer studentAge;
+    @DecimalMin(value = "0.0", message = "分数必须大于0")
+    @DecimalMax(value = "100.0", message = "分数不能超过100")
     private BigDecimal studentScore;
     private Integer rank;
     private Integer totals;
@@ -25,6 +32,7 @@ public class StudentRankingDTO {
     private BigDecimal different;
     private String grade;
     private String performance;
+
     /**
      * 计算描述表现
      */

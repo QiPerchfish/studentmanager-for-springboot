@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import jakarta.validation.Valid;
 
 /**
  * --关于此版本
@@ -98,5 +99,10 @@ public class Controller {
     @GetMapping
     public Result<Page<StudentRankingDTO>> list(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
         return Result.success(studentService.listStudents(page, size));
+    }
+
+    @PostMapping("/save")
+    public Result<StudentRankingDTO> addStudent(@Valid @RequestBody StudentRankingDTO dto) {
+        return Result.success(dto);
     }
 }
