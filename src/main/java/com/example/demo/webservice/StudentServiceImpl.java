@@ -115,7 +115,7 @@ public class StudentServiceImpl implements StudentService {
         dto.setStudentName(student.getName());
         dto.setStudentId(student.getId());
         dto.setStudentNo(student.getStudentNo());
-        dto.setStudentAge(String.valueOf(student.getAge()));
+        dto.setStudentAge(Integer.valueOf(String.valueOf(student.getAge())));
 
         // 返回DTO结果
         return dto;

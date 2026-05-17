@@ -67,6 +67,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!--AOP日志相关-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
         <!--字段查询Valid-->
         <dependency>
             <groupId>org.hibernate.validator</groupId>

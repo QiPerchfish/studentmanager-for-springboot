@@ -78,7 +78,7 @@ public class StudentRankingDTO {
                 .studentNo((String) result[2])
                 .studentScore((BigDecimal) result[3])
                 .studentName((String) result[4])
-                .studentAge((String) result[5])
+                .studentAge((Integer) result[5])
                 .rank(rank)
                 .totals(totals)
                 .build();
