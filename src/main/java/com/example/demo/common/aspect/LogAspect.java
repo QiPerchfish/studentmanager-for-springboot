@@ -1,6 +1,7 @@
 package com.example.demo.common.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -8,8 +9,9 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import jakarta.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
@@ -29,9 +31,12 @@ public class LogAspect {
      */
     @Around("controllerMethod()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("方法执行了");
+        long startTime = System.currentTimeMillis();
+        log.info("方法执行了");
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
         Object result = joinPoint.proceed();
-        System.out.println("执行完毕");
+        log.info("执行完了");
         return result;
     }
 }
