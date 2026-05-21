@@ -31,12 +31,21 @@ public class LogAspect {
      */
     @Around("controllerMethod()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
-        log.info("方法执行了");
+
+
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            log.warn("无法获取请求信息");
+            return joinPoint.proceed();
+        }
         HttpServletRequest request = attributes.getRequest();
+        String method = request.getMethod();
+        String url = request.getRequestURL().toString();
+        log.info("请求 {} {}", method, url);
+        long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
-        log.info("执行完了");
+        long costTime = System.currentTimeMillis();
+        log.info("耗时 {} {}", costTime);
         return result;
     }
 }
