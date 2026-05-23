@@ -70,5 +70,5 @@ A concise, fast, and operational online Web backend system, built on Spring Boot
 
 ### 1. 克隆项目
 ```bash
-git clone https://github.com/你的用户名/student-management.git
-cd student-management
+git clone https://github.com/QiPerchfish/studentmanager-for-springboot.git
+cd studentmanager-for-springboot/
