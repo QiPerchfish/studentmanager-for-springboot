@@ -33,6 +33,7 @@ public class LogAspect {
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
 
+
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
             log.warn("无法获取请求信息");
@@ -46,6 +47,9 @@ public class LogAspect {
         Object result = joinPoint.proceed();
         long costTime = System.currentTimeMillis();
         log.info("耗时 {} {}", costTime);
+
+        String responseJson = objectMapper.writeValueAsString(result);
+        log.info("响应: {}", responseJson);
         return result;
     }
 }
