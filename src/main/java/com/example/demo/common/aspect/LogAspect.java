@@ -46,7 +46,7 @@ public class LogAspect {
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long costTime = System.currentTimeMillis();
-        log.info("耗时 {} {}", costTime);
+        log.info("耗时 {} ", costTime);
 
         String responseJson = objectMapper.writeValueAsString(result);
         log.info("响应: {}", responseJson);
