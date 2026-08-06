@@ -1,9 +1,11 @@
 package com.example.demo.webservice;
 
+import com.example.demo.common.DTO.StudentRequest;
+import com.example.demo.common.DTO.StudentResponse;
 import com.example.demo.common.Repository.StudentRepository;
 import com.example.demo.common.Repository.StudentService;
-import com.example.demo.common.StudentRankingDTO;
 import com.example.demo.common.exception.BusinssException;
+import com.example.demo.common.exception.StudentNoAlreadyExistsException;
 import com.example.demo.entity.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,6 @@ import java.util.Optional;
 
 @Service
 @Transactional
-//@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
     @Autowired
@@ -27,17 +28,27 @@ public class StudentServiceImpl implements StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public Student updateStudentsInfo(Long id, StudentRankingDTO dto) {
-        Student student = studentRepository.findById(id)
+    @Override
+    public StudentResponse updateStudentsInfo(Long id, StudentRequest request) {
+        Student student  = studentRepository.findById(id)
                 .orElseThrow(() -> new BusinssException("学生不存在, ID = " + id));
 
-        student.setName(dto.getStudentName());
-        student.setStudentNo(dto.getStudentNo());
+        student.setName(request.getName());
+        student.setStudentNo(request.getNumber());
+        student.setAge(request.getAge());
 
-        if (dto.getStudentName() == null || dto.getStudentName().trim().isEmpty()) {
+        Student updatedStudent = studentRepository.save(student);
+
+        StudentResponse studentResponse = new StudentResponse();
+        studentResponse.setId(updatedStudent.getId());
+        studentResponse.setName(updatedStudent.getName());
+        studentResponse.setAge(updatedStudent.getAge());
+        studentResponse.setNumber(updatedStudent.getStudentNo());
+
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
             throw new BusinssException("学生姓名不能为空");
         }
-        return studentRepository.save(student);
+        return studentResponse;
     }
     @Override
     public List<Student> findAllStudents() {
@@ -52,12 +63,23 @@ public class StudentServiceImpl implements StudentService {
     public Optional<Student> findStudentById(Long id) {
         return Optional.ofNullable(studentRepository.findById(id).orElse(null));
     }
-    @Override
-    public Student saveStudent(Student student) {
-        if (student.getId() == null && studentRepository.existsByStudentNo(student.getStudentNo())) {
-            throw new RuntimeException("学号已存在"+student.getStudentNo());
-        }
-        return studentRepository.save(student);
+
+    public StudentResponse saveStudent(StudentRequest request) {
+        Student student = new Student();
+
+        student.setName(request.getName());
+        student.setAge(request.getAge());
+        student.setStudentNo(request.getNumber());
+
+        Student saved = studentRepository.save(student);
+
+        StudentResponse response = new StudentResponse();
+        response.setId(saved.getId());
+        response.setNumber(saved.getStudentNo());
+        response.setName(saved.getName());
+        response.setAge(saved.getAge());
+
+        return response;
     }
     @Override
     @Transactional
@@ -99,26 +121,40 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> searchStudentByName(String name) {
         return List.of();
     }
+
+    @Override
+    public StudentResponse addStudent(StudentRequest request) {
+        if (studentRepository.existsByStudentNo(request.getNumber())) {
+            throw new StudentNoAlreadyExistsException(request.getNumber());
+        }
+        return saveStudent(request);
+    }
+
     /**
      * 分页查询的方法
      */
-    @Override
-    public Page<StudentRankingDTO> listStudents(int page, int size){
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<StudentResponse> listStudents(Pageable pageable) {
         Page<Student> studentPage = studentRepository.findAll(pageable);
-
-        return studentPage.map(this::convertToDTO);
+        return studentPage.map(this::convertToResponse);
     }
 
-    private StudentRankingDTO convertToDTO(Student student) {
-        StudentRankingDTO dto = new StudentRankingDTO();
-        dto.setStudentName(student.getName());
-        dto.setStudentId(student.getId());
-        dto.setStudentNo(student.getStudentNo());
-        dto.setStudentAge(Integer.valueOf(String.valueOf(student.getAge())));
+    @Override
+    public StudentResponse getStudentById(Long id) {
+        return null;
+    }
 
-        // 返回DTO结果
-        return dto;
+    @Override
+    public StudentResponse updateStudentInfo(Long id, StudentRequest request) {
+        return null;
+    }
+
+    private StudentResponse convertToResponse(Student student) {
+        StudentResponse response = new StudentResponse();
+        response.setId(student.getId());
+        response.setName(student.getName());
+        response.setAge(student.getAge());
+        response.setNumber(student.getStudentNo());
+        return response;
     }
 
 }

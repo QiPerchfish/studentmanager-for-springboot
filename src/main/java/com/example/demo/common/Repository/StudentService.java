@@ -1,9 +1,9 @@
 package com.example.demo.common.Repository;
 
-import com.example.demo.common.StudentRankingDTO;
+import com.example.demo.common.DTO.StudentRequest;
+import com.example.demo.common.DTO.StudentResponse;
 import com.example.demo.entity.Student;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public interface StudentService {
     List<Student> findAllStudent();
 
     Optional<Student> findStudentById(Long id);
-    Student saveStudent(Student student);
+    StudentResponse saveStudent(StudentRequest request);
     void deleteStudent(Long id);
     //业务查询
     List<Student> findStudentByClass(String className);
@@ -24,10 +24,14 @@ public interface StudentService {
     boolean isStudentNoExtists(String studentNo);
     long countStudentsByClass(String className);
     Double getAverageScoreByClass(String className);
-    Student updateStudentsInfo(Long id, StudentRankingDTO studentRankingDTO);
+    StudentResponse updateStudentsInfo(Long id, StudentRequest request);
 
 
     List<Student> searchStudentByName(String name);
 
-    Page<StudentRankingDTO> listStudents(int page, int size);
+    StudentResponse addStudent(StudentRequest request);
+    Page<StudentResponse> listStudents(Pageable pageable);
+    StudentResponse getStudentById(Long id);
+    StudentResponse updateStudentInfo(Long id, StudentRequest request);
+
 }
