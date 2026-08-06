@@ -1,6 +1,8 @@
 package com.example.demo.common.exception;
 
 import com.example.demo.common.Result;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.expression.AccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -10,8 +12,11 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import java.nio.file.AccessDeniedException;
 
 /**
  * 全局异常处理器
@@ -27,6 +32,24 @@ public class GlobalExceptionHandler {
         return Result.error(e.getMessage());
     }
 
+    /**
+     * 学生未找到异常处理方法
+     */
+    @ExceptionHandler(StudentNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Result<Void> handleStudentNotFoundException(StudentNotFoundException e) {
+        log.warn("该学生不存在: {}", e.getMessage());
+        return Result.error(e.getMessage());
+    }
+
+    @ExceptionHandler(StudentNoAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Result<Void> handleStudentNoAlreadyExistsException(StudentNoAlreadyExistsException e) {
+        log.warn("学号已经存在: {}", e.getMessage());
+        return Result.error(e.getMessage());
+    }
+
+    // -----------业务异常到此------
 
     /**
      * 关于状态码的异常
@@ -90,6 +113,26 @@ public class GlobalExceptionHandler {
     public Result<Void> handleNotFound(NoHandlerFoundException e) {
         log.warn("请求路径不存在: {} {}", e.getHttpMethod(), e.getRequestURL());
         return Result.error(404, "资源不存在");
+    }
+
+    /**
+     * 数据库操作异常处理
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Result<Void> handleDatabaseConflict(DataIntegrityViolationException e) {
+        log.warn("数据库操作冲突: {}", e.getMessage());
+        return Result.error(409, "数据库操作冲突, 您可能需要查看您学生们的学号是否冲突");
+    }
+
+    /**
+     * 无权限访问
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Result<Void> handleAccessDenied(AccessDeniedException e) {
+        log.warn("无权限访问: {}", e.getMessage());
+        return Result.error(403, "您暂时没有此处访问权限");
     }
 
     /**
