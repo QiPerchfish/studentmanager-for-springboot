@@ -1,10 +1,13 @@
 package com.example.demo.StudentController;
 
+import com.example.demo.common.DTO.StudentRequest;
+import com.example.demo.common.DTO.StudentResponse;
 import com.example.demo.common.Repository.StudentService;
 import com.example.demo.common.Result;
-import com.example.demo.common.StudentRankingDTO;
 import com.example.demo.entity.Student;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +16,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 /**
- * --关于此版本
+ * 关于此版本
  * 此版本为测试版Beta,该系统完全免费，不会出现相关收费功能
  * CopyRight（c）该系统开发团队
  * 采用MIT许可证授权
@@ -49,7 +52,7 @@ public class Controller {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Student createStudent(@RequestBody Student student) {
+    public Student createStudent(@RequestBody Student student)  {
         return studentService.saveStudent(student);
     }
     /**
@@ -57,8 +60,9 @@ public class Controller {
      * /api/student/{id}
      */
     @PutMapping("/{id}")
-    public Result<Student> updateStudentsInfo(@PathVariable Long id, @RequestBody Student student) {
-        return Result.success(studentService.updateStudentsInfo(id, StudentRankingDTO.builder().build()));
+    public Result<StudentResponse> updateStudentsInfo(@PathVariable Long id, @RequestBody StudentRequest request) {
+        StudentResponse response  = studentService.updateStudentsInfo(id, request);
+        return Result.success(response);
     }
     @DeleteMapping("/{id}")
     public Result<Void> deleteStudent(@PathVariable Long id) {
@@ -97,12 +101,15 @@ public class Controller {
      * 新增了分页查询
      */
     @GetMapping
-    public Result<Page<StudentRankingDTO>> list(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
-        return Result.success(studentService.listStudents(page, size));
+    public Result<Page<StudentResponse>> list(@RequestParam(defaultValue = "0")int page,
+                                              @RequestParam(defaultValue = "10")int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return Result.success(studentService.listStudents(pageable));
     }
 
-    @PostMapping("/save")
-    public Result<StudentRankingDTO> addStudent(@Valid @RequestBody StudentRankingDTO dto) {
-        return Result.success(dto);
+    @PostMapping
+    public Result<StudentResponse> addStudent(@Valid @RequestBody StudentRequest request) {
+        StudentResponse response = studentService.addStudent(request);
+        return Result.success(response);
     }
 }
