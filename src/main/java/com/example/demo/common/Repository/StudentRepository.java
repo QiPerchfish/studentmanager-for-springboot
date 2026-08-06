@@ -26,9 +26,7 @@ public interface StudentRepository extends JpaRepository<Student,Long> {
     List<Student> findByAge(Integer age);
 
     Boolean existsByStudentNo(String studentNo);
-
-    Boolean existsByName(String name);
-
+    
     Boolean existsByClassName(String className);
 
     void deleteAllByName(String name);

@@ -1,6 +1,5 @@
 package com.example.demo.common.Repository;
 
-import com.example.demo.common.StudentRankingDTO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,9 +12,9 @@ import java.util.Map;
 public interface DataStatisticsController {
     BigDecimal getClassAverageScore(String className,Long courseId);
     Map<String,Integer> getScoreDistribution(String className,Long courseId);
-    List<StudentRankingDTO> getClassDistribution(Long courseId);
     //学生统计接口
     Integer getStudentCountByClass(String className);
+    List<StudentRankingDTO> getClassDistribution(Long courseId);
     Map<String,Integer> getGenderDistribution(String className);
     Double getAverageAgeByClass(String className);
 }
